@@ -8,40 +8,13 @@
 ; Thanks a lot!
 SetKeyDelay 0
 
-; turns to be 1 when ctrl-x is pressed
-is_pre_x = 0
-; turns to be 1 when ctrl-space is pressed
-is_pre_spc = 0
+^u::
 
-; Applications you want to disable emacs-like keybindings
-; (Please comment out applications you don't use)
-is_target()
-{
-  IfWinActive,ahk_class ConsoleWindowClass ; Cygwin
-    Return 1 
-  IfWinActive,ahk_class MEADOW ; Meadow
-    Return 1 
-  IfWinActive,ahk_class cygwin/x X rl-xterm-XTerm-0
-    Return 1
-  IfWinActive,ahk_class MozillaUIWindowClass ; keysnail on Firefox
-    Return 1
-  ; Avoid VMwareUnity with AutoHotkey
-  IfWinActive,ahk_class VMwareUnityHostWndClass
-    Return 1
-  IfWinActive,ahk_class Vim ; GVIM
-    Return 1
-;  IfWinActive,ahk_class SWT_Window0 ; Eclipse
-;    Return 1
-;   IfWinActive,ahk_class Xming X
-;     Return 1
-;   IfWinActive,ahk_class SunAwtFrame
-;     Return 1
-;   IfWinActive,ahk_class Emacs ; NTEmacs
-;     Return 1  
-;   IfWinActive,ahk_class XEmacs ; XEmacs on Cygwin
-;     Return 1
-  Return 0
-}
+#IfWinActive ahk_class PuTTY
+::btw::Send by the way
+#IfWinActive
+
+#If Not WinActive("ahk_class ConsoleWindowClass") and Not WinActive("ahk_class VMwareUnityHostWndClass") and Not WinActive("ahk_class Vim") and Not WinActive("ahk_class PuTTY")
 
 delete_char()
 {
@@ -197,7 +170,7 @@ backward_char()
 {
   global
   if is_pre_spc
-    Send +{Left} 
+    Send +{Left}
   Else
     Send {Left}
   Return
@@ -222,185 +195,25 @@ scroll_down()
 }
 
 
-^x::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    is_pre_x = 1
-  Return 
-^f::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-  {
-    If is_pre_x
-      find_file()
-    Else
-      forward_char()
-  }
-  Return  
-^c::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-  {
-    If is_pre_x
-      kill_emacs()
-  }
-  Return  
-^d::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    delete_char()
-  Return
-^h::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    delete_backward_char()
-  Return
-^k::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    kill_line()
-  Return
-;; ^o::
-;;   If is_target()
-;;     Send %A_ThisHotkey%
-;;   Else
-;;     open_line()
-;;   Return
-^g::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    quit()
-  Return
-;; ^j::
-;;   If is_target()
-;;     Send %A_ThisHotkey%
-;;   Else
-;;     newline_and_indent()
-;;   Return
-^m::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    newline()
-  Return
-^i::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    indent_for_tab_command()
-  Return
-^s::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-  {
-    If is_pre_x
-      save_buffer()
-    Else
-      isearch_forward()
-  }
-  Return
-^r::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    isearch_backward()
-  Return
-^w::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    kill_region()
-  Return
-!w::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    kill_ring_save()
-  Return
-^y::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    yank()
-  Return
-^/::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    undo()
-  Return  
-  
-;$^{Space}::
-^vk20sc039::
-  If is_target()
-    Send {CtrlDown}{Space}{CtrlUp}
-  Else
-  {
-    If is_pre_spc
-      is_pre_spc = 0
-    Else
-      is_pre_spc = 1
-  }
-  Return
-^@::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-  {
-    If is_pre_spc
-      is_pre_spc = 0
-    Else
-      is_pre_spc = 1
-  }
-  Return
-^a::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    move_beginning_of_line()
-  Return
-^e::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    move_end_of_line()
-  Return
-^p::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    previous_line()
-  Return
-^n::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    next_line()
-  Return
-^b::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    backward_char()
-  Return
-^v::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    scroll_down()
-  Return
-!v::
-  If is_target()
-    Send %A_ThisHotkey%
-  Else
-    scroll_up()
-  Return
-
+<^f:: forward_char()
+<^d:: delete_char()
+<^h:: delete_backward_char()
+<^k:: kill_line()
+<^o:: open_line()
+<^g:: quit()
+<^j:: newline_and_indent()
+<^m:: newline()
+<^i:: indent_for_tab_command()
+<^s:: isearch_forward()
+<^r:: isearch_backward()
+<^w:: kill_region()
+!w:: kill_ring_save()
+<^y:: yank()
+<^/:: undo()
+<^a:: move_beginning_of_line()
+<^e:: move_end_of_line()
+<^p:: previous_line()
+<^n:: next_line()
+<^b:: backward_char()
+<^v:: scroll_down()
+!v:: scroll_up()
