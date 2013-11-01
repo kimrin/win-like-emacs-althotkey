@@ -8,11 +8,12 @@
 ; Thanks a lot!
 SetKeyDelay 0
 
-^u::
 
-#IfWinActive ahk_class PuTTY
-::btw::Send by the way
-#IfWinActive
+#include IME.ahk
+
+<^j::IME_SET(1)
+>^j::IME_SET(0)
+
 
 #If Not WinActive("ahk_class ConsoleWindowClass") and Not WinActive("ahk_class VMwareUnityHostWndClass") and Not WinActive("ahk_class Vim") and Not WinActive("ahk_class PuTTY")
 
@@ -194,14 +195,13 @@ scroll_down()
   Return
 }
 
-
 <^f:: forward_char()
 <^d:: delete_char()
 <^h:: delete_backward_char()
 <^k:: kill_line()
 <^o:: open_line()
 <^g:: quit()
-<^j:: newline_and_indent()
+; <^j:: newline_and_indent()
 <^m:: newline()
 <^i:: indent_for_tab_command()
 <^s:: isearch_forward()
