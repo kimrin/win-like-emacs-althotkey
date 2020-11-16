@@ -52,8 +52,8 @@ press_right_alt_win()
   }
 }
 
->#::>^
-
+LCtrl::CapsLock
+CapsLock::LCtrl
 <!::IME_SetConvMode(press_right_alt())
 <#<!::IME_SetConvMode(press_right_alt_win())
 
@@ -62,7 +62,7 @@ get_key_locale()
   return Get_languege_id(Get_Keyboard_Layout())
 }
 
-<!>#:: Send get_key_locale()
++!:: Send get_key_locale()
 
 #If Not WinActive("ahk_class ConsoleWindowClass") and Not WinActive("ahk_class VMwareUnityHostWndClass") and Not WinActive("ahk_class Vim") and Not WinActive("ahk_class PuTTY")
 
@@ -265,7 +265,7 @@ scroll_down()
 <^p:: previous_line()
 <^n:: next_line()
 <^b:: backward_char()
-<^v:: scroll_down()
+;<^v:: scroll_down()
 !v:: scroll_up()
 <^x:: kill_region()
 <^+f:: isearch_forward()
