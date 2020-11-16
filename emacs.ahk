@@ -55,7 +55,7 @@ press_right_alt_win()
 >#::>^
 
 <!::IME_SetConvMode(press_right_alt())
-<!<#::IME_SetConvMode(press_right_alt_win())
+<#<!::IME_SetConvMode(press_right_alt_win())
 
 get_key_locale()
 {
