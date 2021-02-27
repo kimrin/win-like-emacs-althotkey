@@ -11,6 +11,17 @@ SetKeyDelay 0
 
 #include IME.ahk
 
+*CapsLock::
+Send {Ctrl}
+return
+
+LWin::Ctrl
+BS::\
++BS::|
+\::BS
+|::BS
+
+
 ; <^j::IME_SET(1)
 ; >^j::IME_SET(0)
 
@@ -20,38 +31,19 @@ SetKeyDelay 0
 ;    25 (0x19  0001 1001)         ひらがな
 ;    27 (0x1B  0001 1011)         全カタカナ
 
-press_right_alt()
+kanji()
 {
-  if (IME_GET() = 1) {
-    conv = IME_GetConvMode()
-    return (conv = 16) ? 25 ; roman -> hiragana(kanji)
-      : (conv = 19) ? 27    ; hankaku kana -> zenkaku katakana
-      : (conv = 24) ? 19    ; zenkaku roman -> hankaku kana
-      : (conv = 25) ? 16    ; hiragana(kanji) -> roman
-      : (conv = 27) ? 24    ; zenkaku katakana -> zenkaku roman
-      : 16
-  } else {
-    IME_SET(1)
-    return 25
-  }
+  IME_SET(1)
+  IME_SetConvMode(25) ; hiragana
+  return 1
 }
 
-press_right_alt_shift()
+roman()
 {
-  if (IME_GET() = 1) {
-    conv = IME_GetConvMode()
-    return (conv = 16) ? 27 ; roman -> zenkaku katakana
-      : (conv = 19) ? 16    ; hankaku kana -> roman
-      : (conv = 24) ? 16    ; zenkaku roman -> roman
-      : (conv = 25) ? 16    ; hiragana(kanji) -> roman
-      : (conv = 27) ? 16    ; zenkaku katakana -> roman
-      : 16
-  } else {
-    IME_SET(1)
-    return 25
-  }
+  IME_SET(1)
+  IME_SetConvMode(16) ; roman
+  return 0
 }
-
 
 ; Requires AutoHotkey v1.1.26+, and the keyboard hook must be installed.
 SendSuppressedKeyUp(key) {
@@ -63,22 +55,23 @@ SendSuppressedKeyUp(key) {
 }
 
 ; Disable Alt+key shortcuts for the IME.
-~LAlt::SendSuppressedKeyUp("LAlt")
+; ~LAlt::SendSuppressedKeyUp("LAlt")
 
 ; Test hotkey:
-!CapsLock::MsgBox % A_ThisHotkey
+; !CapsLock::MsgBox % A_ThisHotkey
 
 ; Remap CapsLock to LCtrl in a way compatible with IME.
-*CapsLock::
-    Send {Blind}{LCtrl DownR}
-    SendSuppressedKeyUp("LCtrl")
-    return
-*CapsLock up::
-    Send {Blind}{LCtrl Up}
-    return
+; *CapsLock::
+;     Send {Blind}{LCtrl DownR}
+;     SendSuppressedKeyUp("LCtrl")
+;     return
 
-RAlt::IME_SetConvMode(press_right_alt())
-+RAlt::IME_SetConvMode(press_right_alt_shift())
+; *CapsLock up::
+;     Send {Blind}{LCtrl Up}
+;     return
+
+RAlt::roman()
+RCtrl::kanji()
 
 #If Not WinActive("ahk_class ConsoleWindowClass") and Not WinActive("ahk_class VMwareUnityHostWndClass") and Not WinActive("ahk_class Vim") and Not WinActive("ahk_class PuTTY")
 
@@ -281,7 +274,7 @@ scroll_down()
 <^p:: previous_line()
 <^n:: next_line()
 <^b:: backward_char()
-;<^v:: scroll_down()
-!v:: scroll_up()
+RCtrl & Down:: scroll_down()
+RCtrl & Up:: scroll_up()
 <^x:: kill_region()
 <^+f:: isearch_forward()
